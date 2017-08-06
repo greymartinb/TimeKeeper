@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Support Time Clock</title>
+<!-- <<<<<<< Updated upstream -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto|Permanent+Marker|Kalam" rel="stylesheet">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+  </head>
+
+<body> 
+
+  <main class= "container">
+    <section class= "row">
+      <div class= "col-lg-2 col-md-1 col-sm-1">
+      </div>
+      <div class= "col-lg-8 col-md-10 col-sm-10">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><b>Support Guru</b></th>
+              <th><b>At Desk</b></th>
+              <th><b>When</b></th>
+              <th><b>Break/Desk</b></th>
+            </tr>
+          </thead>
+          <tbody class="tableData">
+            <tr class= "grey"> 
+              <td class = "name">Grey</td>
+              <td class= "AtDesk"> </td>
+              <td class= "time"></td>
+              <td class = button><button>Timestamp</button></td>
+            </tr>
+            <tr class= "jacob"> 
+              <td class = "name">Jacob</td>
+              <td class= "AtDesk"> </td>
+              <td class= "time"></td>
+              <td class = button><button>Timestamp</button></td>
+            </tr>
+            <tr class= "cory"> 
+              <td class = "name">Cory</td>
+              <td class= "AtDesk"> </td>
+              <td class= "time"></td>
+              <td class = button><button>Timestamp</button></td>
+            </tr>
+            <tr class= "micheal"> 
+              <td class = "name">Micheal</td>
+              <td class= "AtDesk"> </td>
+              <td class= "time"></td>
+              <td class = button><button>Timestamp</button></td>
+            </tr>
+            <tr class= "jay"> 
+              <td class = "name">Jay</td>
+              <td class= "AtDesk"> </td>
+              <td class= "time"></td>
+              <td class = button><button>Timestamp</button></td>
+            </tr>
+            <tr class= "james"> 
+              <td class = "name">James</td>
+              <td class= "AtDesk"> </td>
+              <td class= "time"></td>
+              <td class = button><button>Timestamp</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class= "col-lg-2 col-md-1 col-sm-1">
+      </div>
+    </section>
+
+  </main>
+
+
+</body>
+
+<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyAkdhk5L7LpkOCzfBrCYx28dwmyXYjvTqk",
+    authDomain: "storage-c8dc3.firebaseapp.com",
+    databaseURL: "https://storage-c8dc3.firebaseio.com",
+    projectId: "storage-c8dc3",
+    storageBucket: "storage-c8dc3.appspot.com",
+    messagingSenderId: "1097513669243"
+  };
+  firebase.initializeApp(config);
+
+  var database = firebase.database();
+
+
+      database.ref('/TeamMembers').on('value', function(snapshot) {
+       // console.log(snapshot.val())
+       console.log("Val firing")
+        var team = snapshot.val()
+        // console.log(team.grey)
+        var directory= ["grey", "jacob", "cory", "micheal", "jay", "james"];
+        // console.log(team.grey)
+        for (var i = 0; i< directory.length; i++){
+           var holder= $("."+ directory[i]).children()
+           var appending = directory[i]
+           console.log(team[appending].atDesk)
+           console.log(team[appending].time)
+           $(holder[2]).html(team[appending].time)
+           $(holder[1]).html(team[appending].atDesk)
+        }
+       });
+
+      // Reset Function
+  // firebase.database().ref("/TeamMembers").set({
+  //     grey : {
+  //       atDesk : "False",
+  //       time: 0
+  //     },
+  //     jacob : {
+  //       atDesk : "False",
+  //       time: 0
+  //     },
+  //     cory : {
+  //       atDesk : "False",
+  //       time: 0
+  //     },
+  //     micheal : {
+  //       atDesk : "False",
+  //       time: 0
+  //     },
+  //     jay: {
+  //       atDesk : "False",
+  //       time: 0
+  //     },
+  //      james: {
+  //       atDesk : "False",
+  //       time: 0
+  //     }
+  // });
+ 
+    function update(name, atDesk){
+      var d =  new Date();
+      var t = d.toLocaleTimeString()
+      console.log(d);
+      firebase.database().ref("/TeamMembers/" + name).update({
+          time: t,
+          atDesk: atDesk
+      })
+    }
+    
+    
+   $(document).on( "click", ".button", function() {
+    var atDesk;
+      var name;
+      var siblings;
+      var section= $(this).parent()
+      siblings = section.children()
+      name = section.attr("class")
+      atDesk = siblings[1].innerHTML
+      // console.log(atDesk)
+      time= siblings[2].innerHTML
+      if (atDesk === "False"){
+        atDesk = "True";
+        update(name, atDesk)
+      }
+      else {
+        counter = 0
+        atDesk = "False";
+        update(name, atDesk)
+        
+      } 
+    })
+
+
+
+</script>
+<script src= "js/clock.js"></script>
+</html>
